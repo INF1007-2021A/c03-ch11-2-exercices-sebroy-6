@@ -12,7 +12,7 @@ from character import *
 
 
 # TODO: Créer la classe Spell qui a les même propriétés que Weapon, mais avec un coût en MP pour l'utiliser
-class Spell:
+class Spell(Weapon):
 	"""
 	Un sort dans le jeu.
 
@@ -23,10 +23,13 @@ class Spell:
 	"""
 
 	# TODO: __init__
-	pass
+	def __init__(self, name, power, mp_cost, min_level):
+		super().__init__(name, power, min_level)
+		self.mp_cost = mp_cost
+
 
 # TODO: Déclarer la classe Magician qui étend la classe Character
-class Magician:
+class Magician(Character):
 	"""
 	Un utilisateur de magie dans le jeu. Un magicien peut utiliser des sorts, mais peut aussi utiliser des armes physiques. Sa capacité à utiliser des sorts dépend 
 
@@ -41,34 +44,57 @@ class Magician:
 	:ivar using_magic: Détermine si le magicien tente d'utiliser sa magie dans un combat.
 	"""
 
+# TODO: Initialiser le `magic_attack` avec le paramètre, le `max_mp` et `mp` de la même façon que `max_hp` et `hp`, `spell` à None et `using_magic` à False.
+
 	def __init__(self, name, max_hp, max_mp, attack, magic_attack, defense, level):
-		# TODO: Initialiser les attributs de Character
-		# TODO: Initialiser le `magic_attack` avec le paramètre, le `max_mp` et `mp` de la même façon que `max_hp` et `hp`, `spell` à None et `using_magic` à False.
-		pass
+		super().__init__(name, max_hp, attack, defense, level)
+		self.max_mp = max_mp
+		self.magic_attack = magic_attack
+		self.mp = self.max_mp
+		self.spell = None
+		self.using_magic = False
 
 	@property
 	def mp(self):
-		pass
+		return self.mp
 
 	@mp.setter
 	def mp(self, val):
-		pass
+		if val.min_level > self.level:
+			raise ValueError(Magician)
+		self.mp = val
+
 
 	# TODO: Écrire les getter/setter pour la propriété `spell`.
+
+	@property
+	def spell(self):
+		return self.spell
+
+	@spell.setter
+	def spell(self, val):
+		if val.min_level > self.level:
+			raise ValueError(Spell)
+		self.mp = val
 	#       On peut affecter None.
 	#       Si le niveau minimal d'un sort est supérieur au niveau du personnage, on lève ValueError.
 
-	# TODO: Surcharger la méthode `compute_damage` 
+	# TODO: Surcharger la méthode `compute_damage`
+
 	def compute_damage(self, other):
 		# Si le magicien va utiliser sa magie (`will_use_spell()`):
+		if self.will_use_spell():
 			# Soustraire à son MP le coût du sort
-			# Retourner le résultat du calcul de dégâts magiques
+			self.mp -= self.spell.mp_cost
+			# Retourner le résultat du calcul de dégâts magique
+
+
 		# Sinon
 			# Retourner le résultat du calcul de dégâts physiques
 		pass
 
 	def will_use_spell(self):
-		pass
+		return isinstance(self, Spell)
 
 	def _compute_magical_damage(self, other):
 		pass
